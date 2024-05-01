@@ -8,6 +8,7 @@ module.exports = {
     findByCreatedUser,
     findByCreatedUserCategory,
     findByCategory,
+    remove,
 };
 
 async function create(req, res) {
@@ -77,3 +78,14 @@ async function findByCategory(req, res) {
     }
 }
 
+async function remove(req, res) {
+    try {
+        const { expenseid } = req.params;
+        const expense = await Expense.deleteOne({ expenseId: expenseid })
+        const sharedExpenses = await SharedExpense.deleteMany({ expenseId: expenseid });
+        
+        return res.status(201).json({ expense, sharedExpenses });
+    } catch (error) {
+        return res.status(500).json({ error: error.message })
+    }
+}

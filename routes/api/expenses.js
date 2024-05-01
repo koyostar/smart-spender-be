@@ -14,4 +14,6 @@ router.get('/find/user/:userid/:category', expensesCtrl.findByCreatedUserCategor
 // Find by category
 router.get('/find/category/:category', expensesCtrl.findByCategory)
 
+router.delete('/delete/:expenseid', expensesCtrl.remove)
+
 module.exports = router;

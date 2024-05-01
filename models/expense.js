@@ -1,8 +1,12 @@
 const mongoose = require("mongoose");
+const AutoIncrement = require('mongoose-sequence')(mongoose);
 const Schema = mongoose.Schema;
 
 const expenseSchema = new Schema(
   {
+    expenseId: {
+      type: Number,
+    },
     createdBy: {
       type: Schema.Types.ObjectId,
       ref: "User",
@@ -30,6 +34,6 @@ const expenseSchema = new Schema(
   }
 );
 
-// expenseSchema.virtual('paidAmt').get(function() {});
+expenseSchema.plugin(AutoIncrement, { inc_field: 'expenseId' });
 
 module.exports = mongoose.model("Expense", expenseSchema);

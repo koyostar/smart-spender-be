@@ -20,6 +20,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(require('./config/checkToken'))
 
 app.use('/api/users', require('./routes/api/users'));
+app.use('/api/expenses', require('./routes/api/expenses'));
+app.use('/api/shared-expenses', require('./routes/api/sharedExpenses'));
 
 app.get('/*', function(req, res) {
     res.send("Hello World");

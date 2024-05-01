@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const sharedExpenseSchema = new Schema({
     expenseId: {
-        type: String,
+        type: Number,
     },
     user: {
         type: Schema.Types.ObjectId,
@@ -14,8 +14,13 @@ const sharedExpenseSchema = new Schema({
         type: Number,
         default: 0
     },
+    amountPaid: {
+        type: Number,
+        default: 0
+    },
     isPaid: {
         type: Boolean,
+        default: false,
     }
 }, {
   toJSON: { virtuals: true }

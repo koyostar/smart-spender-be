@@ -8,7 +8,7 @@ require('./config/database');
 
 const app = express()
 let corsOption = {
-  origin: ['smart-spender.vercel.app'],
+  origin: ['https://smart-spender.vercel.app'],
 }
 
 app.use(cors(corsOption))

@@ -4,7 +4,11 @@ const User = require("../../models/user");
 
 async function calculateStats(req, res) {
   try {
-    const { userid } = req.params;
+    console.log("Calculating statistics...");
+
+    const { userid } = req.query;
+    console.log("UserID:", userid);
+
     const user = await User.findById(userid);
 
     const totalExpenses = await Expense.aggregate([
@@ -61,6 +65,7 @@ async function calculateStats(req, res) {
       sharedExpenseStats: sharedExpenseStats[0] || {
         totalAmountIsOwed: 0,
       },
+      message: "Statistics calculated successfully",
     });
   } catch (error) {
     return res.status(500).json({ error: error.message });

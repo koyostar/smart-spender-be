@@ -15,7 +15,8 @@ function checkToken(req, res) {
 
 async function login(req, res) {
   try {
-    const user = await User.findOne({ email: req.body.email });
+    const lowercaseUsername = req.body.username.toLowerCase();
+    const user = await User.findOne({ username: lowercaseUsername });
     if (!user) throw new Error();
     const match = await bcrypt.compare(req.body.password, user.password);
     if (!match) throw new Error();
@@ -29,6 +30,9 @@ async function login(req, res) {
 async function create(req, res) {
   try {
     console.log("create route is hit");
+    req.body.username = req.body.username.toLowerCase(); // format username to lowercase
+    req.body.username = req.body.username.replace(" ", ""); // replace spaces in username
+    req.body.email = req.body.email.toLowerCase(); // format email to lowercase
     const user = await User.create(req.body);
     const token = createJWT(user);
     // The token is a string, but yes, we can

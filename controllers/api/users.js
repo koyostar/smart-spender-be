@@ -8,6 +8,9 @@ module.exports = {
   checkToken,
   findAll,
   findByUsername,
+  friendsFindAll,
+  friendsAdd,
+  friendsRemove,
 };
 
 function checkToken(req, res) {
@@ -35,6 +38,9 @@ async function create(req, res) {
     req.body.username = req.body.username.toLowerCase(); // format username to lowercase
     req.body.username = req.body.username.replace(" ", ""); // replace spaces in username
     req.body.email = req.body.email.toLowerCase(); // format email to lowercase
+    const checkUser = await User.find({ username: req.body.username });
+    console.log('checkUser', checkUser)
+    if (checkUser) throw new Error();
     const user = await User.create(req.body);
     const token = createJWT(user);
     // The token is a string, but yes, we can
@@ -56,6 +62,8 @@ function createJWT(user) {
   );
 }
 
+/*-- Find Users --*/
+
 async function findAll(req, res) {
   try {
       const users = await User.find({}); 
@@ -74,5 +82,47 @@ async function findByUsername(req, res) {
       return res.status(201).json({ user });
   } catch (error) {
       return res.status(500).json({ error: error.message })
+  }
+}
+
+/*-- Handle Friends --*/
+
+async function friendsFindAll(req, res) {
+  try {
+      const friends = req.user.friends;
+      
+      return res.status(201).json(friends);
+  } catch (error) {
+      return res.status(500).json({ error: error.message })
+  }
+}
+
+async function friendsAdd(req, res) {
+  try {
+    const friend = await User.findOne({ username: req.params.selecteduser })
+    const friends = await User.findByIdAndUpdate(
+      req.user._id,
+      { $addToSet: { friends: friend._id } },
+      { new: true }
+    );
+    return res.status(200).json(friends);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: error.message });
+  }
+}
+
+async function friendsRemove(req, res) {
+  try {
+    const friend = await User.findOne({ username: req.params.selecteduser })
+    const friends = await User.findByIdAndUpdate(
+      req.user._id,
+      { $pull: { friends: friend._id } },
+      { new: true }
+    );
+    return res.status(200).json(friends);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: error.message });
   }
 }

@@ -5,7 +5,6 @@ const sharedExpenseSchema = new Schema(
   {
     expenseId: {
       type: Number,
-      ref: "Expense",
       required: true,
     },
     user: {

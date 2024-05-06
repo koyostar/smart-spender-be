@@ -42,7 +42,7 @@ async function calculateStats(req, res) {
     ]);
 
     const userExpenses = await Expense.find({ createdBy: user._id });
-    const expenseIds = userExpenses.map((expense) => expense._id);
+    const expenseIds = userExpenses.map((expense) => expense.expenseId);
     const sharedExpenseStats = await SharedExpense.aggregate([
       {
         $match: { expenseId: { $in: expenseIds }, isPaid: false },

@@ -10,4 +10,7 @@ router.post('/login', usersCtrl.login);
 
 router.get('/check-token', ensureLoggedIn, usersCtrl.checkToken)
 
+router.get('/find', usersCtrl.findAll);
+router.get('/find/:username', usersCtrl.findByUsername)
+
 module.exports = router;

@@ -38,9 +38,6 @@ async function create(req, res) {
     req.body.username = req.body.username.toLowerCase(); // format username to lowercase
     req.body.username = req.body.username.replace(" ", ""); // replace spaces in username
     req.body.email = req.body.email.toLowerCase(); // format email to lowercase
-    const checkUser = await User.find({ username: req.body.username });
-    console.log('checkUser', checkUser)
-    if (checkUser) throw new Error();
     const user = await User.create(req.body);
     const token = createJWT(user);
     // The token is a string, but yes, we can

@@ -6,6 +6,8 @@ module.exports = {
   create,
   login,
   checkToken,
+  findAll,
+  findByUsername,
 };
 
 function checkToken(req, res) {
@@ -52,4 +54,25 @@ function createJWT(user) {
     process.env.SECRET,
     { expiresIn: "24h" }
   );
+}
+
+async function findAll(req, res) {
+  try {
+      const users = await User.find({}); 
+
+      return res.status(201).json(users);
+  } catch (error) {
+      return res.status(500).json({ error: error.message })
+  }
+}
+
+async function findByUsername(req, res) {
+  try {
+      const { username } = req.params;
+      const user = await User.find( { username: username });;
+      
+      return res.status(201).json({ user });
+  } catch (error) {
+      return res.status(500).json({ error: error.message })
+  }
 }

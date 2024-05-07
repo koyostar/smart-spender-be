@@ -24,6 +24,7 @@ router.get('/friends/search/:search', usersCtrl.friendsSearch)
 router.get('/friends', usersCtrl.friendsFindAll)
 
 router.get('/find/:username', usersCtrl.findByUsername)
+router.get('/find/id/:id/friends', usersCtrl.findByIdGetFriends)
 router.get('/find/id/:id', usersCtrl.findById)
 router.get('/find', usersCtrl.findAll);
 

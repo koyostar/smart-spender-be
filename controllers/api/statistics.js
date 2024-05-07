@@ -11,12 +11,12 @@ async function calculateStats(req, res) {
 
     const user = await User.findById(userid);
 
-    const amountSpent = await Expense.aggregate([
+    const expensesCreated = await Expense.aggregate([
       { $match: { createdBy: user._id } },
       {
         $group: {
           _id: null,
-          amountSpent: { $sum: "$amount" },
+          expensesCreated: { $sum: "$amount" },
           numofExpenses: { $sum: 1 },
         },
       },
@@ -90,13 +90,13 @@ async function calculateStats(req, res) {
     ]);
 
     const totalExpenses =
-      (amountSpent[0]?.amountSpent || 0) +
+      (expensesCreated[0]?.expensesCreated || 0) +
       (paidSharedExpenses[0]?.totalPaid || 0) -
       (sharedExpensePaid[0]?.totalAmountIsPaid || 0);
 
     return res.status(200).json({
-      amountSpent: amountSpent[0] || {
-        amountSpent: 0,
+      expensesCreated: expensesCreated[0] || {
+        expensesCreated: 0,
         numofExpenses: 0,
       },
       totalSharedExpenses: totalSharedExpenses[0] || { totalOwed: 0 },

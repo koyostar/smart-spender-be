@@ -9,6 +9,7 @@ module.exports = {
   findAll,
   findByUsername,
   friendsFindAll,
+  friendsSearch,
   friendsAdd,
   friendsRemove,
 };
@@ -89,6 +90,18 @@ async function friendsFindAll(req, res) {
       const friends = req.user.friends;
       
       return res.status(201).json(friends);
+  } catch (error) {
+      return res.status(500).json({ error: error.message })
+  }
+}
+
+async function friendsSearch(req, res) {
+  try {
+    const { search } = req.params;
+    const formattedSearch = search.toLowerCase().replace(" ", ""); // set to lowercase and remove spaces
+    const users = await User.find({ username: { $regex : formattedSearch } });
+      
+    return res.status(201).json(users);
   } catch (error) {
       return res.status(500).json({ error: error.message })
   }

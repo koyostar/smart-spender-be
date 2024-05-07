@@ -20,6 +20,7 @@ router.get('/check-token', ensureLoggedIn, usersCtrl.checkToken)
 
 router.post('/friends/add/:selecteduser', usersCtrl.friendsAdd)
 router.post('/friends/remove/:selecteduser', usersCtrl.friendsRemove)
+router.get('/friends/search/:search', usersCtrl.friendsSearch)
 router.get('/friends', usersCtrl.friendsFindAll)
 
 router.get('/find', usersCtrl.findAll);

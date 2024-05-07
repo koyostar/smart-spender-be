@@ -9,6 +9,7 @@ module.exports = {
   findAll,
   findByUsername,
   findById,
+  findByIdGetFriends,
   friendsFindAll,
   friendsSearch,
   friendsAdd,
@@ -90,6 +91,18 @@ async function findById(req, res) {
       const user = await User.findById(id);;
       
       return res.status(201).json({ user });
+  } catch (error) {
+      return res.status(500).json({ error: error.message })
+  }
+}
+
+async function findByIdGetFriends(req, res) {
+  try {
+      const { id } = req.params;
+      const user = await User.findById(id);
+      const friends = user.friends;
+      
+      return res.status(201).json({ friends });
   } catch (error) {
       return res.status(500).json({ error: error.message })
   }

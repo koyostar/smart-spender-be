@@ -11,12 +11,12 @@ async function calculateStats(req, res) {
 
     const user = await User.findById(userid);
 
-    const totalExpenses = await Expense.aggregate([
+    const amountSpent = await Expense.aggregate([
       { $match: { createdBy: user._id } },
       {
         $group: {
           _id: null,
-          totalExpenses: { $sum: "$amount" },
+          amountSpent: { $sum: "$amount" },
           numofExpenses: { $sum: 1 },
         },
       },
@@ -41,9 +41,19 @@ async function calculateStats(req, res) {
       },
     ]);
 
+    const paidSharedExpenses = await SharedExpense.aggregate([
+      { $match: { user: user._id, isPaid: true } },
+      {
+        $group: {
+          _id: null,
+          totalPaid: { $sum: "$amountOwed" },
+        },
+      },
+    ]);
+
     const userExpenses = await Expense.find({ createdBy: user._id });
     const expenseIds = userExpenses.map((expense) => expense.expenseId);
-    const sharedExpenseStats = await SharedExpense.aggregate([
+    const sharedExpenseOwed = await SharedExpense.aggregate([
       {
         $match: { expenseId: { $in: expenseIds }, isPaid: false },
       },
@@ -51,20 +61,57 @@ async function calculateStats(req, res) {
         $group: {
           _id: null,
           totalAmountIsOwed: { $sum: "$amountOwed" },
+          usersThatOwes: {
+            $addToSet: {
+              user: "$user",
+              amountOwed: "$amountOwed",
+            },
+          },
         },
       },
     ]);
 
+    const sharedExpensePaid = await SharedExpense.aggregate([
+      {
+        $match: { expenseId: { $in: expenseIds }, isPaid: true },
+      },
+      {
+        $group: {
+          _id: null,
+          totalAmountIsPaid: { $sum: "$amountOwed" },
+          usersThatPaid: {
+            $addToSet: {
+              user: "$user",
+              amountPaid: "$amountOwed",
+            },
+          },
+        },
+      },
+    ]);
+
+    const totalExpenses =
+      (amountSpent[0]?.amountSpent || 0) +
+      (paidSharedExpenses[0]?.totalPaid || 0) -
+      (sharedExpensePaid[0]?.totalAmountIsPaid || 0);
+
     return res.status(200).json({
-      totalExpenses: totalExpenses[0] || {
-        totalExpenses: 0,
+      amountSpent: amountSpent[0] || {
+        amountSpent: 0,
         numofExpenses: 0,
       },
       totalSharedExpenses: totalSharedExpenses[0] || { totalOwed: 0 },
       unpaidSharedExpenses: unpaidSharedExpenses[0] || { totalUnpaid: 0 },
-      sharedExpenseStats: sharedExpenseStats[0] || {
+      paidSharedExpenses: paidSharedExpenses[0] || { totalPaid: 0 },
+      sharedExpenseOwed: sharedExpenseOwed[0] || {
         totalAmountIsOwed: 0,
+        usersThatOwes: [],
       },
+      sharedExpensePaid: sharedExpensePaid[0] || {
+        totalAmountIsPaid: 0,
+        usersThatPaid: [],
+      },
+      totalExpenses: totalExpenses,
+
       message: "Statistics calculated successfully",
     });
   } catch (error) {

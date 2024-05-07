@@ -8,6 +8,7 @@ module.exports = {
   checkToken,
   findAll,
   findByUsername,
+  findById,
   friendsFindAll,
   friendsSearch,
   friendsAdd,
@@ -76,6 +77,17 @@ async function findByUsername(req, res) {
   try {
       const { username } = req.params;
       const user = await User.find( { username: username });;
+      
+      return res.status(201).json({ user });
+  } catch (error) {
+      return res.status(500).json({ error: error.message })
+  }
+}
+
+async function findById(req, res) {
+  try {
+      const { id } = req.params;
+      const user = await User.findById(id);;
       
       return res.status(201).json({ user });
   } catch (error) {

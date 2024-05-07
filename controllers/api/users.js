@@ -66,45 +66,45 @@ function createJWT(user) {
 
 async function findAll(req, res) {
   try {
-      const users = await User.find({}); 
+    const users = await User.find({});
 
-      return res.status(201).json(users);
+    return res.status(201).json(users);
   } catch (error) {
-      return res.status(500).json({ error: error.message })
+    return res.status(500).json({ error: error.message });
   }
 }
 
 async function findByUsername(req, res) {
   try {
-      const { username } = req.params;
-      const user = await User.find( { username: username });;
-      
-      return res.status(201).json({ user });
+    const { username } = req.params;
+    const user = await User.find({ username: username });
+
+    return res.status(201).json({ user });
   } catch (error) {
-      return res.status(500).json({ error: error.message })
+    return res.status(500).json({ error: error.message });
   }
 }
 
 async function findById(req, res) {
   try {
-      const { id } = req.params;
-      const user = await User.findById(id);;
-      
-      return res.status(201).json({ user });
+    const { id } = req.params;
+    const user = await User.findById(id);
+
+    return res.status(201).json({ user });
   } catch (error) {
-      return res.status(500).json({ error: error.message })
+    return res.status(500).json({ error: error.message });
   }
 }
 
 async function findByIdGetFriends(req, res) {
   try {
-      const { id } = req.params;
-      const user = await User.findById(id);
-      const friends = user.friends;
-      
-      return res.status(201).json({ friends });
+    const { id } = req.params;
+    const user = await User.findById(id).populate("friends", "username _id");
+    const friends = user.friends;
+
+    return res.status(201).json({ friends });
   } catch (error) {
-      return res.status(500).json({ error: error.message })
+    return res.status(500).json({ error: error.message });
   }
 }
 
@@ -112,11 +112,11 @@ async function findByIdGetFriends(req, res) {
 
 async function friendsFindAll(req, res) {
   try {
-      const friends = req.user.friends;
-      
-      return res.status(201).json(friends);
+    const friends = req.user.friends;
+
+    return res.status(201).json(friends);
   } catch (error) {
-      return res.status(500).json({ error: error.message })
+    return res.status(500).json({ error: error.message });
   }
 }
 
@@ -124,17 +124,17 @@ async function friendsSearch(req, res) {
   try {
     const { search } = req.params;
     const formattedSearch = search.toLowerCase().replace(" ", ""); // set to lowercase and remove spaces
-    const users = await User.find({ username: { $regex : formattedSearch } });
-      
+    const users = await User.find({ username: { $regex: formattedSearch } });
+
     return res.status(201).json(users);
   } catch (error) {
-      return res.status(500).json({ error: error.message })
+    return res.status(500).json({ error: error.message });
   }
 }
 
 async function friendsAdd(req, res) {
   try {
-    const friend = await User.findOne({ username: req.params.selecteduser })
+    const friend = await User.findOne({ username: req.params.selecteduser });
     const friends = await User.findByIdAndUpdate(
       req.user._id,
       { $addToSet: { friends: friend._id } },
@@ -149,7 +149,7 @@ async function friendsAdd(req, res) {
 
 async function friendsRemove(req, res) {
   try {
-    const friend = await User.findOne({ username: req.params.selecteduser })
+    const friend = await User.findOne({ username: req.params.selecteduser });
     const friends = await User.findByIdAndUpdate(
       req.user._id,
       { $pull: { friends: friend._id } },

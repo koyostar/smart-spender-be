@@ -99,7 +99,7 @@ async function friendsSearch(req, res) {
   try {
     const { search } = req.params;
     const formattedSearch = search.toLowerCase().replace(" ", ""); // set to lowercase and remove spaces
-    const users = await User.find({ username:  {$regex : formattedSearch } });
+    const users = await User.find({ username: { $regex : formattedSearch } });
       
     return res.status(201).json(users);
   } catch (error) {

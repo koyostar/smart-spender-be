@@ -22,7 +22,8 @@ router.post('/friends/add/:selecteduser', usersCtrl.friendsAdd)
 router.post('/friends/remove/:selecteduser', usersCtrl.friendsRemove)
 router.get('/friends', usersCtrl.friendsFindAll)
 
-router.get('/find', usersCtrl.findAll);
 router.get('/find/:username', usersCtrl.findByUsername)
+router.get('/find/id/:id', usersCtrl.findById)
+router.get('/find', usersCtrl.findAll);
 
 module.exports = router;

@@ -77,7 +77,7 @@ async function findAll(req, res) {
 async function findByUsername(req, res) {
   try {
     const { username } = req.params;
-    const user = await User.find({ username: username });
+    const user = await User.findOne({ username: username });
 
     return res.status(201).json({ user });
   } catch (error) {

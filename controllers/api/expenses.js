@@ -50,9 +50,10 @@ async function findAll(req, res) {
 async function findByExpenseId(req, res) {
     try {
         const { expenseid } = req.params;
-        const expense = await Expense.find({ expenseId: expenseid });
+        const expense = await Expense.findOne({ expenseId: expenseid });
+        const sharedExpense = await SharedExpense.find({ expenseId: expenseid })
         
-        return res.status(201).json({ expense });
+        return res.status(201).json({ expense, sharedExpense });
     } catch (error) {
         return res.status(500).json({ error: error.message })
     }

@@ -18,7 +18,7 @@ const expenseSchema = new Schema(
     },
     category: {
       type: String,
-      enum: ["Travel", "Food", "Accommodation"],
+      enum: ["travel", "food", "accommodation"],
     },
     amount: {
       type: Number,

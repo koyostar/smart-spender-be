@@ -11,8 +11,8 @@ const TransferSchema = new Schema(
       type: Number,
       min: 0,
     },
-    expense: {
-      type: Schema.Types.ObjectId,
+    expenseId: {
+      type: Number,
       required: true,
     },
     from: {

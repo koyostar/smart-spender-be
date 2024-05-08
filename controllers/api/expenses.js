@@ -16,18 +16,21 @@ async function create(req, res) {
         const expenseDetails = req.body;
         const expense = await Expense.create(expenseDetails);
 
-        /* if (sharedExpenseField) {
-            sharedExpenseField.forEach(sharedExpense => {
-                const sharedExpenseDetails = req.body.sharedExpense;
-                await sharedExpense.create({
+        const sharedExpenses = [];
+        if (expenseDetails.sharedExpenses) {
+            const sharedExpensesArr = expenseDetails.sharedExpenses;
+            for (const sharedExpense of sharedExpensesArr) {
+                const createdSharedExpense = await SharedExpense.create({
                     expenseId: expense.expenseId,
-                    user: sharedExpense.user,
+                    user: sharedExpense.friend,
                     amountOwed: sharedExpense.amount,
                 });
-            });
-        } */
 
-        return res.status(201).json(expense);
+                sharedExpenses.push(createdSharedExpense);
+            };
+        }
+
+        return res.status(201).json(expenseDetails);
     } catch (error) {
         return res.status(500).json({ error: error.message })
     }

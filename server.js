@@ -12,6 +12,7 @@ let corsOption = {
 };
 
 app.use(cors(corsOption));
+// app.use(cors())
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -23,6 +24,7 @@ app.use("/api/users", require("./routes/api/users"));
 app.use("/api/expenses", require("./routes/api/expenses"));
 app.use("/api/shared-expenses", require("./routes/api/sharedExpenses"));
 app.use("/api/statistics", require("./routes/api/statistics"));
+app.use("/api/transfer", require("./routes/api/transfer"))
 
 // app.get("/*", function (req, res) {
 //   res.send("you are doing smth wrong");

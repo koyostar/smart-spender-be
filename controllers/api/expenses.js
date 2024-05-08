@@ -5,6 +5,7 @@ const User = require('../../models/user');
 module.exports = {
     create,
     findAll,
+    findByExpenseId,
     findByCreatedUser,
     findByCreatedUserCategory,
     findByCategory,
@@ -41,6 +42,17 @@ async function findAll(req, res) {
         const expense = await Expense.find({}); 
 
         return res.status(201).json(expense);
+    } catch (error) {
+        return res.status(500).json({ error: error.message })
+    }
+}
+
+async function findByExpenseId(req, res) {
+    try {
+        const { expenseid } = req.params;
+        const expense = await Expense.find({ expenseId: expenseid });
+        
+        return res.status(201).json({ expense });
     } catch (error) {
         return res.status(500).json({ error: error.message })
     }

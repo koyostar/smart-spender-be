@@ -5,7 +5,8 @@ const expensesCtrl = require('../../controllers/api/expenses');
 
 router.post('/create', expensesCtrl.create);
 
-router.get('/find', expensesCtrl.findAll);
+// Find by expenseId
+router.get('/find/expenseid/:expenseid', expensesCtrl.findByExpenseId)
 
 // Find by created user
 router.get('/find/user/:userid', expensesCtrl.findByCreatedUser)
@@ -13,6 +14,7 @@ router.get('/find/user/:userid/:category', expensesCtrl.findByCreatedUserCategor
 
 // Find by category
 router.get('/find/category/:category', expensesCtrl.findByCategory)
+router.get('/find', expensesCtrl.findAll);
 
 router.delete('/delete/:expenseid', expensesCtrl.remove)
 

@@ -1,9 +1,11 @@
+const Expense = require('../../models/expense');
 const SharedExpense = require("../../models/sharedExpense");
 const User = require("../../models/user");
 
 module.exports = {
   find,
   findByUser,
+  findByUserWithExpense,
   findByExpenseId,
   update,
   create,
@@ -22,9 +24,33 @@ async function find(req, res) {
 async function findByUser(req, res) {
   try {
     const { userid } = req.params;
-    const sharedExpense = await SharedExpense.find({ user: userid });
+    const sharedExpenses = await SharedExpense.find({ user: userid });
 
-    return res.status(201).json(sharedExpense);
+    return res.status(201).json(sharedExpenses);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+}
+
+async function findByUserWithExpense(req, res) {
+  try {
+    const { userid } = req.params;
+    const sharedExpenses = await SharedExpense.find({ user: userid, isPaid: false });
+
+    const expenses = [];
+    if (sharedExpenses) {
+      for (const sharedExpense of sharedExpenses) {
+          const getExpense = await Expense.find({
+              expenseId: sharedExpense.expenseId,
+          });
+
+          if (getExpense.length > 0) {
+            expenses.push(getExpense);
+          }
+      };
+    }
+
+    return res.status(201).json({ sharedExpenses, expenses });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

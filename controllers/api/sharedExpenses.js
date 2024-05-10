@@ -24,9 +24,9 @@ async function find(req, res) {
 async function findByUser(req, res) {
   try {
     const { userid } = req.params;
-    const sharedExpenses = await SharedExpense.find({ user: userid });
+    const sharedExpense = await SharedExpense.find({ user: userid });
 
-    return res.status(201).json(sharedExpenses);
+    return res.status(201).json(sharedExpense);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

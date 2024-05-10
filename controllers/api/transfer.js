@@ -31,7 +31,23 @@ async function findByFromUser(req, res) {
     const { userid } = req.params;
     const transfers = await Transfer.find({ from: userid });
 
-    return res.status(201).json(transfers);
+    async function getUserArr() {
+      const finalArr = [];
+      if (transfers) {
+        for (const transfer of transfers) {  
+          if (!finalArr.includes(transfer.to)) {
+            finalArr.push(transfer.to);
+          }
+        };
+      }
+      return finalArr;
+    }
+    
+    const userArr = await getUserArr();
+
+    const users = await User.find({ '_id': { $in: userArr } });
+
+    return res.status(201).json({transfers, users});
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

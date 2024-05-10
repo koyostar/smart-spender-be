@@ -69,7 +69,7 @@ async function calculateStats(req, res) {
           userExpensesOwed: { $sum: "$amountOwed" },
           usersThatOwes: {
             $addToSet: {
-              expenseId: "expenseId",
+              expenseId: "$expenseId",
               user: "$user",
               amountOwed: "$amountOwed",
             },
@@ -88,7 +88,7 @@ async function calculateStats(req, res) {
           userExpensesPaid: { $sum: "$amountOwed" },
           usersThatPaid: {
             $addToSet: {
-              expenseId: "expenseId",
+              expenseId: "$expenseId",
               user: "$user",
               amountPaid: "$amountOwed",
             },

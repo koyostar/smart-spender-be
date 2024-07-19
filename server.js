@@ -7,12 +7,17 @@ require("dotenv").config();
 require("./config/database");
 
 const app = express();
-let corsOption = {
-  origin: ["https://smart-spender.vercel.app"],
+
+const HOST = process.env.HOST_SITE_URL;
+
+const corsOptions = {
+  credentials: true,
+  origin: `${HOST}`,
+  allowedHeaders: "Content-Type, Authorization",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 };
 
 app.use(cors(corsOption));
-// app.use(cors())
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -25,10 +30,6 @@ app.use("/api/expenses", require("./routes/api/expenses"));
 app.use("/api/shared-expenses", require("./routes/api/sharedExpenses"));
 app.use("/api/statistics", require("./routes/api/statistics"));
 app.use("/api/transfer", require("./routes/api/transfer"))
-
-// app.get("/*", function (req, res) {
-//   res.send("you are doing smth wrong");
-// });
 
 const port = process.env.PORT || 4000;
 
